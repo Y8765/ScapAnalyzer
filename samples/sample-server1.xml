@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Benchmark xmlns="http://checklists.nist.gov/xccdf/1.2" id="xccdf_org.ssgproject.content_benchmark_RHEL-8" resolved="1">
+  <title>CIS Red Hat Enterprise Linux 8 Benchmark</title>
+  <version>0.1.62</version>
+  <Profile id="xccdf_org.ssgproject.content_profile_cis">
+    <title>CIS Red Hat Enterprise Linux 8 Benchmark Level 1</title>
+    <description>This profile implements CIS Benchmark recommendations.</description>
+  </Profile>
+  <Group id="xccdf_org.ssgproject.content_group_system">
+    <title>System Settings</title>
+    <Rule id="xccdf_org.ssgproject.content_rule_ensure_gpgcheck_globally_activated" severity="high">
+      <title>Ensure gpgcheck Enabled In Main yum Configuration</title>
+      <description>The gpgcheck option should be used to ensure checking of an RPM package's signature.</description>
+      <rationale>Verifying the authenticity of the software prior to installation.</rationale>
+      <ident system="http://cce.mitre.org">CCE-80790-9</ident>
+      <fixtext>Set gpgcheck=1 in /etc/yum.conf</fixtext>
+    </Rule>
+    <Rule id="xccdf_org.ssgproject.content_rule_ensure_redhat_gpgkey_installed" severity="high">
+      <title>Ensure Red Hat GPG Key Installed</title>
+      <description>Red Hat signs packages with GPG keys.</description>
+      <ident system="http://cce.mitre.org">CCE-80795-8</ident>
+    </Rule>
+    <Rule id="xccdf_org.ssgproject.content_rule_sshd_disable_root_login" severity="medium">
+      <title>Disable SSH Root Login</title>
+      <description>Root login via SSH should be disabled.</description>
+      <ident system="http://cce.mitre.org">CCE-27445-6</ident>
+      <fixtext>Set PermitRootLogin no in /etc/ssh/sshd_config</fixtext>
+    </Rule>
+    <Rule id="xccdf_org.ssgproject.content_rule_sshd_set_idle_timeout" severity="medium">
+      <title>Set SSH Idle Timeout Interval</title>
+      <description>SSH allows administrators to set an idle timeout interval.</description>
+      <ident system="http://cce.mitre.org">CCE-27433-2</ident>
+    </Rule>
+    <Rule id="xccdf_org.ssgproject.content_rule_firewalld_enabled" severity="medium">
+      <title>Verify firewalld Enabled</title>
+      <description>The firewalld service should be enabled.</description>
+      <ident system="http://cce.mitre.org">CCE-80998-8</ident>
+    </Rule>
+    <Rule id="xccdf_org.ssgproject.content_rule_selinux_state" severity="high">
+      <title>Ensure SELinux State is Enforcing</title>
+      <description>The SELinux state should be set to enforcing.</description>
+      <ident system="http://cce.mitre.org">CCE-27334-2</ident>
+    </Rule>
+    <Rule id="xccdf_org.ssgproject.content_rule_no_empty_passwords" severity="high">
+      <title>Prevent Login to Accounts With Empty Password</title>
+      <description>Accounts with empty passwords should not be allowed.</description>
+      <ident system="http://cce.mitre.org">CCE-27286-4</ident>
+    </Rule>
+    <Rule id="xccdf_org.ssgproject.content_rule_audit_rules_login_events" severity="medium">
+      <title>Record Attempts to Alter Logon and Logout Events</title>
+      <description>The audit system should collect login and logout events.</description>
+      <ident system="http://cce.mitre.org">CCE-27437-3</ident>
+    </Rule>
+  </Group>
+  <TestResult id="xccdf_org.open-scap_testresult_cis_server1" start-time="2026-04-25T10:00:00" end-time="2026-04-25T10:15:30" test-system="cpe:/a:redhat:openscap:1.3.4">
+    <benchmark href="ssg-rhel8-ds.xml" id="xccdf_org.ssgproject.content_benchmark_RHEL-8"/>
+    <title>OpenSCAP Scan Result</title>
+    <profile idref="xccdf_org.ssgproject.content_profile_cis"/>
+    <target>web-server-01.prod.local</target>
+    <target-address>10.0.1.101</target-address>
+    <target-address>192.168.1.101</target-address>
+    <target-facts>
+      <fact name="urn:xccdf:fact:identifier" type="string">web-server-01</fact>
+      <fact name="urn:xccdf:fact:ethernet:MAC" type="string">00:1A:2B:3C:4D:5E</fact>
+    </target-facts>
+    <platform idref="cpe:/o:redhat:enterprise_linux:8"/>
+    <identity authenticated="true" privileged="true">root</identity>
+    <score system="urn:xccdf:scoring:default" maximum="100">72.500000</score>
+    <rule-result idref="xccdf_org.ssgproject.content_rule_ensure_gpgcheck_globally_activated" time="2026-04-25T10:01:00" severity="high" weight="1.0">
+      <result>pass</result>
+      <ident system="http://cce.mitre.org">CCE-80790-9</ident>
+    </rule-result>
+    <rule-result idref="xccdf_org.ssgproject.content_rule_ensure_redhat_gpgkey_installed" time="2026-04-25T10:01:05" severity="high" weight="1.0">
+      <result>pass</result>
+    </rule-result>
+    <rule-result idref="xccdf_org.ssgproject.content_rule_sshd_disable_root_login" time="2026-04-25T10:02:00" severity="medium" weight="1.0">
+      <result>fail</result>
+      <message severity="error">PermitRootLogin is set to yes in /etc/ssh/sshd_config</message>
+    </rule-result>
+    <rule-result idref="xccdf_org.ssgproject.content_rule_sshd_set_idle_timeout" time="2026-04-25T10:02:30" severity="medium" weight="1.0">
+      <result>pass</result>
+    </rule-result>
+    <rule-result idref="xccdf_org.ssgproject.content_rule_firewalld_enabled" time="2026-04-25T10:03:00" severity="medium" weight="1.0">
+      <result>fail</result>
+      <message severity="error">firewalld.service is not active</message>
+    </rule-result>
+    <rule-result idref="xccdf_org.ssgproject.content_rule_selinux_state" time="2026-04-25T10:04:00" severity="high" weight="1.0">
+      <result>pass</result>
+    </rule-result>
+    <rule-result idref="xccdf_org.ssgproject.content_rule_no_empty_passwords" time="2026-04-25T10:05:00" severity="high" weight="1.0">
+      <result>pass</result>
+    </rule-result>
+    <rule-result idref="xccdf_org.ssgproject.content_rule_audit_rules_login_events" time="2026-04-25T10:06:00" severity="medium" weight="1.0">
+      <result>fail</result>
+    </rule-result>
+  </TestResult>
+</Benchmark>

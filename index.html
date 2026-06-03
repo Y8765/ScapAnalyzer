@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Compare OpenSCAP XCCDF, ARF and HTML security audit reports across multiple servers">
+  <title>OpenSCAP Report Comparator</title>
+  <link rel="stylesheet" href="css/styles.css">
+  <script src="js/xlsx.bundle.js"></script>
+</head>
+<body>
+
+  <!-- Header -->
+  <header class="app-header" id="app-header">
+    <div class="logo">🛡️</div>
+    <h1>OpenSCAP Report Comparator</h1>
+    <span class="header-badge">XCCDF · ARF · HTML</span>
+    <button class="theme-toggle" id="theme-toggle" title="Toggle light/dark mode">🌙</button>
+  </header>
+
+  <main class="main-wrap">
+
+    <!-- File Management Panel -->
+    <section class="file-panel" id="file-panel">
+      <div class="file-panel-header">
+        <h2>📂 Reports</h2>
+        <div class="file-actions">
+          <button class="btn-add" id="btn-add-files" title="Add files">
+            <svg viewBox="0 0 20 20" fill="currentColor" width="14" height="14"><path fill-rule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clip-rule="evenodd"/></svg>
+            Add Files
+          </button>
+          <button class="btn-add btn-folder" id="btn-add-folder" title="Add folder">
+            <svg viewBox="0 0 20 20" fill="currentColor" width="14" height="14"><path d="M2 6a2 2 0 012-2h5l2 2h5a2 2 0 012 2v6a2 2 0 01-2 2H4a2 2 0 01-2-2V6z"/></svg>
+            Folder
+          </button>
+          <button class="btn-clear" id="btn-clear-all" title="Remove all" style="display:none;">Clear All</button>
+        </div>
+      </div>
+
+      <div class="exemption-card" id="exemption-panel-section" style="display: none;">
+        <h3>🛡️ Exemption Policy <span id="exempt-count-badge" class="chip" style="margin-left:auto;background:var(--accent);color:#fff;font-size:0.7rem;padding:2px 8px">0</span></h3>
+        <div class="exemption-card-actions">
+          <button class="btn-premium primary" id="btn-manage-exemptions">🛠️ Review All Rules</button>
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
+            <button class="btn-premium secondary" id="btn-load-exemptions">📂 Import</button>
+            <button class="btn-premium secondary" id="btn-export-exemptions">🛡️ Export</button>
+          </div>
+        </div>
+      </div>
+
+      <input type="file" id="file-input" multiple accept=".xml,.html,.htm,.xccdf" style="display:none">
+      <input type="file" id="folder-input" webkitdirectory multiple style="display:none">
+
+      <!-- Drop zone -->
+      <div class="drop-zone" id="drop-zone">
+        <div class="drop-zone-content">
+          <span class="drop-icon">📄</span>
+          <div>
+            <span>Drop OpenSCAP reports here</span>
+            <div style="font-size:0.68rem;color:var(--text-muted);margin-top:2px">XCCDF XML · ARF XML · HTML reports — XML recommended for full data</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- File list -->
+      <div class="file-list" id="file-list"></div>
+
+      <!-- Duplicate warnings -->
+      <div class="duplicate-warnings" id="duplicate-warnings"></div>
+
+      <!-- Host summary -->
+      <div class="host-summary" id="host-summary"></div>
+
+      <!-- Compare button -->
+      <div class="compare-bar" id="compare-bar" style="display:none;">
+        <button class="btn-compare" id="btn-compare" disabled>⚡ Compare Reports</button>
+      </div>
+    </section>
+
+    <!-- Results Section -->
+    <section class="results-section" id="results-section" style="display:none;">
+
+      <!-- Dashboard Strip -->
+      <div class="dashboard-strip" id="dashboard-strip">
+        <div class="global-stats" id="global-stats"></div>
+      </div>
+
+      <!-- Filter Bar -->
+      <div class="filter-bar" id="filter-bar">
+        <div class="filter-search-wrap">
+          <svg class="search-icon" viewBox="0 0 20 20" fill="currentColor" width="16" height="16"><path fill-rule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z" clip-rule="evenodd"/></svg>
+          <input type="text" id="filter-search" placeholder="Search rules by name or ID...">
+        </div>
+        <select id="filter-severity">
+          <option value="all">All Severities</option>
+          <option value="high">High</option>
+          <option value="medium">Medium</option>
+          <option value="low">Low</option>
+        </select>
+        <div style="margin-left: 10px; display: flex; align-items: center; gap: 10px;">
+          <div style="display: flex; align-items: center; gap: 6px;">
+            <input type="checkbox" id="filter-group" checked>
+            <label for="filter-group" style="font-size: 0.8rem; color: var(--text-secondary); cursor: pointer; user-select: none;">Group by Category</label>
+          </div>
+          <div id="group-actions" style="display: flex; gap: 6px;">
+            <button id="btn-expand-all" class="btn-text" title="Expand all categories" style="font-size:0.7rem;padding:2px 6px;border:1px solid var(--border);border-radius:4px;background:var(--bg-glass);color:var(--text-secondary);cursor:pointer">↕ Expand All</button>
+            <button id="btn-collapse-all" class="btn-text" title="Collapse all categories" style="font-size:0.7rem;padding:2px 6px;border:1px solid var(--border);border-radius:4px;background:var(--bg-glass);color:var(--text-secondary);cursor:pointer">↕ Collapse All</button>
+          </div>
+        </div>
+        <div class="quick-chips" id="quick-chips">
+          <button class="chip active" data-filter="all">All <span class="chip-count" id="chip-all">0</span></button>
+          <button class="chip chip-diff" data-filter="different">Differences <span class="chip-count" id="chip-diff">0</span></button>
+          <button class="chip chip-fail" data-filter="allfail">All Fail <span class="chip-count" id="chip-fail">0</span></button>
+          <button class="chip chip-exempt" data-filter="allexempt" style="--accent:#60a5fa">Exempted <span class="chip-count" id="chip-exempt">0</span></button>
+          <button class="chip chip-pass" data-filter="allpass">All Pass <span class="chip-count" id="chip-pass">0</span></button>
+          <button class="chip chip-na" data-filter="na">Non Relevant <span class="chip-count" id="chip-na">0</span></button>
+        </div>
+        <div class="export-group">
+          <button class="btn-export" id="btn-export-csv" title="Export to CSV">📥 CSV</button>
+          <button class="btn-export" id="btn-export-xlsx" title="Export to Excel">📊 Excel</button>
+          <button class="btn-export btn-export-html" id="btn-export-html" title="Export standalone HTML report">📄 HTML Report</button>
+        </div>
+      </div>
+
+      <!-- Matrix -->
+      <div class="matrix-info" id="matrix-info"></div>
+      <div class="matrix-wrap" id="matrix-wrap"></div>
+    </section>
+
+  </main>
+
+  <!-- Rule Detail Modal (centered) -->
+  <div class="modal-overlay" id="detail-overlay"></div>
+  <div class="modal-container" id="detail-panel">
+    <div class="modal-dialog">
+      <div class="modal-header">
+        <span class="modal-title">Rule Details</span>
+        <div class="modal-actions">
+          <button class="modal-export" id="detail-export" title="Export this rule">📥 Export</button>
+          <button class="modal-close" id="detail-close">✕</button>
+        </div>
+      </div>
+      <div class="modal-body" id="detail-content"></div>
+    </div>
+  </div>
+
+  <!-- Exemption Modal (self-contained) -->
+  <div id="exempt-backdrop" style="display:none;position:fixed;top:0;left:0;right:0;bottom:0;z-index:9000;background:rgba(0,0,0,0.6);backdrop-filter:blur(6px);">
+    <div style="display:flex;align-items:center;justify-content:center;width:100%;height:100%;" id="exempt-backdrop-inner">
+      <div id="exempt-dialog" style="background:var(--bg-secondary);border:1px solid var(--border);border-radius:16px;width:700px;max-width:95vw;max-height:90vh;display:flex;flex-direction:column;box-shadow:0 25px 80px rgba(0,0,0,0.5);overflow:hidden;">
+        <div style="display:flex;align-items:center;justify-content:space-between;padding:16px 20px;border-bottom:1px solid var(--border);">
+          <span style="font-size:1.05rem;font-weight:700;color:var(--text);">Create Exemption</span>
+          <button type="button" id="exempt-close" style="width:28px;height:28px;border:none;background:var(--bg-glass);color:var(--text-muted);border-radius:6px;cursor:pointer;font-size:0.85rem;display:flex;align-items:center;justify-content:center;">✕</button>
+        </div>
+        <div style="padding:20px;overflow-y:auto;flex:1;">
+          <div id="exempt-rule-title" style="font-size:0.95rem;font-weight:700;margin-bottom:6px;color:var(--text);"></div>
+          <div id="exempt-rule-id" style="font-size:0.75rem;color:var(--text-muted);margin-bottom:16px;word-break:break-all;font-family:monospace;"></div>
+          <div style="font-size:0.85rem;font-weight:600;margin-bottom:6px;color:var(--text);">Reason for Exemption:</div>
+          <textarea id="exempt-reason" rows="3" placeholder="e.g., Business requirement, Approved by CISO" style="display:block;width:100%;box-sizing:border-box;border:1px solid var(--border);border-radius:8px;padding:10px 12px;margin-bottom:16px;font-family:inherit;background:var(--bg-input);color:var(--text);font-size:0.88rem;resize:vertical;outline:none;"></textarea>
+          <div style="font-size:0.85rem;font-weight:600;margin-bottom:8px;color:var(--text);">Apply to:</div>
+          <div id="exempt-radio-global" style="display:flex;align-items:center;gap:8px;padding:8px 10px;margin-bottom:6px;border-radius:8px;border:1px solid var(--border);cursor:pointer;background:var(--bg-glass);">
+            <input type="radio" name="exempt-scope" value="global" checked id="exempt-scope-global" style="margin:0;cursor:pointer;">
+            <span style="font-size:0.85rem;color:var(--text);">All Servers (Global Exemption)</span>
+          </div>
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;">
+            <div id="exempt-radio-specific" style="display:flex;align-items:center;gap:8px;padding:8px 10px;border-radius:8px;border:1px solid var(--border);cursor:pointer;background:var(--bg-glass);flex:1;">
+              <input type="radio" name="exempt-scope" value="specific" id="exempt-scope-specific" style="margin:0;cursor:pointer;">
+              <span style="font-size:0.85rem;font-weight:600;color:var(--text);">Specific Servers</span>
+            </div>
+            <div class="pagination-mini" id="exempt-pagination" style="display:none;gap:4px;margin-left:8px;">
+              <button class="btn-mini" data-size="10" type="button">10</button>
+              <button class="btn-mini" data-size="25" type="button">25</button>
+              <button class="btn-mini" data-size="50" type="button">50</button>
+              <button class="btn-mini active" data-size="all" type="button">ALL</button>
+            </div>
+          </div>
+          <div id="exempt-servers-list" style="display:none;max-height:220px;overflow-y:auto;border:1px solid var(--border);border-radius:8px;margin-bottom:12px;"></div>
+          <div style="display:flex;justify-content:space-between;gap:10px;padding-top:8px;border-top:1px solid var(--border);">
+            <button id="btn-exempt-remove" type="button" style="background:#fee2e2;color:#dc2626;border:1px solid #fca5a5;padding:10px 20px;border-radius:8px;cursor:pointer;display:none;font-weight:600;font-size:0.85rem;">Remove</button>
+            <button id="btn-exempt-save" type="button" style="background:linear-gradient(135deg,#3b82f6,#6366f1);color:#fff;border:none;padding:10px 28px;border-radius:8px;cursor:pointer;margin-left:auto;font-weight:700;font-size:0.88rem;letter-spacing:0.3px;box-shadow:0 4px 12px rgba(59,130,246,0.3);">APPLY ⚡</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Manage Exemptions Modal -->
+  <div class="modal-overlay" id="manage-exempt-overlay" style="z-index:3000"></div>
+  <div class="modal-container" id="manage-exempt-panel" style="z-index:3001">
+    <div class="modal-dialog">
+      <div class="modal-header">
+        <span class="modal-title">Manage Exemptions</span>
+        <div class="modal-actions">
+          <button class="modal-export" id="btn-add-exempt-manual" style="margin-right:10px">➕ Add New Exemption</button>
+          <button class="modal-close" id="manage-exempt-close">✕</button>
+        </div>
+      </div>
+      <div class="modal-body">
+        <div id="manage-exempt-list" style="max-height:400px;overflow-y:auto">
+          <!-- Populated dynamically -->
+        </div>
+        <div style="margin-top:15px;display:flex;justify-content:flex-end">
+          <button id="btn-manage-exempt-close" style="background:var(--accent);color:#fff;border:none;padding:8px 16px;border-radius:6px;cursor:pointer">Done</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="js/storage.js"></script>
+  <script src="js/exemptions.js"></script>
+  <script src="js/parser.js"></script>
+  <script src="js/comparator.js"></script>
+  <script src="js/exporter.js"></script>
+  <script src="js/ui.js"></script>
+  <script src="js/app.js"></script>
+
+</body>
+</html>
