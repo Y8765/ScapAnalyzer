@@ -1,61 +1,104 @@
-# 🛡️ ScapAnalyzer
+<div align="center">
 
-ScapAnalyzer is a modern, high-performance, browser-based compliance audit comparator and analyzer for OpenSCAP reports. It is designed to run entirely client-side, allowing security engineers, compliance officers, and system administrators to securely review and compare reports in air-gapped or restricted environments without any backend server.
+# 📊 ScapAnalyzer
+
+**Browser-based OpenSCAP compliance report comparison and exemption engine**
+
+[![Live Demo](https://img.shields.io/badge/Live%20Demo-y8765.github.io%2FScapAnalyzer-blue?logo=github)](https://y8765.github.io/ScapAnalyzer/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
+[![No Backend](https://img.shields.io/badge/Backend-None%20%E2%80%94%20100%25%20Client--Side-brightgreen)](https://y8765.github.io/ScapAnalyzer/)
+
+</div>
+
+---
+
+<!-- GIF PLACEHOLDER: Full overview — drag in 3-4 XML reports, watch the comparison matrix build, click a rule to inspect it -->
+> 📹 *[Demo GIF: Loading reports and exploring the comparison matrix — coming soon]*
+
+---
+
+## What is ScapAnalyzer?
+
+ScapAnalyzer is a fully client-side, zero-backend tool for analyzing and comparing OpenSCAP compliance reports. Drag and drop your XML or HTML reports from any browser — nothing is uploaded anywhere. All processing and storage happens locally in the browser using IndexedDB.
+
+It is designed to complement **[SCAP Suite](https://github.com/Y8765/ScapSuite)** by providing a professional audit and review layer on top of generated scan reports.
 
 🚀 **Live Version:** [y8765.github.io/ScapAnalyzer/](https://y8765.github.io/ScapAnalyzer/)
 
 ---
 
-## 📸 Screenshots & Demos
+## ✨ Key Features
 
-### 1. Main Compliance Matrix Dashboard
-*Compare compliance states across multiple target hosts in a single unified grid view.*
-<!-- Placeholder for Main Dashboard Screenshot or GIF -->
-![Main Dashboard Mockup](docs/screenshots/dashboard_mockup.webp)
+### 📋 Multi-Server Comparison Matrix
 
-### 2. Exemption Policy Review
-*Quickly view, search, and manage rules exempted from auditing.*
-<!-- Placeholder for Exemption Panel Screenshot -->
-![Exemption Panel Mockup](docs/screenshots/exemption_panel_mockup.webp)
+<!-- GIF PLACEHOLDER: Load 4-5 reports, show the matrix appearing with color-coded Pass/Fail/Error cells, hover over cells -->
+> 📹 *[Demo GIF: Comparison matrix overview — coming soon]*
 
-### 3. Exemption Creation Dialog
-*Create scoped (global or server-specific) exemptions with rationales.*
-<!-- Placeholder for Exemption Creation Dialog Screenshot -->
-![Exemption Dialog Mockup](docs/screenshots/exemption_dialog_mockup.webp)
+Load multiple XCCDF/ARF XML or HTML reports and instantly see a side-by-side compliance matrix. Each cell shows the result for that rule on that host — color-coded by status (Pass, Fail, Error, Non-Relevant).
 
 ---
 
-## ✨ Key Features
+### 🔍 Smart Filtering & Search
 
-- **Drag & Drop Loading:** Simply drop XML (XCCDF/ARF) or HTML reports into the browser.
-- **Side-by-Side Comparison Matrix:** Visual grid showcasing compliance status (Pass, Fail, Error, Non-Relevant) across all uploaded hosts.
-- **Offline & Private:** All processing happens in the browser. IndexedDB is used to persist large datasets locally (no network requests).
-- **Rule Inspector:** Click any rule in the matrix to view descriptions, rationales, remediation instructions, and host-specific results.
-- **Smart Filtering:** Filter matrix by search query, severity (High, Medium, Low), category grouping, or quick-chips (Differences, Failures, Exemptions, Passes).
-- **Exemption Engine:**
-  - Create global exemptions for rules across all servers.
-  - Create targeted exemptions for specific servers.
-  - Attach approval details and rationales.
-  - Export and import exemption policies as JSON.
-- **Rich Exports:** Export the consolidated compliance matrix to:
-  - 📥 **CSV** (General spreadsheets)
-  - 📊 **Excel (XLSX)** (Formatted report with SheetJS)
-  - 📄 **Standalone HTML** (Self-contained, interactive matrix page for emailing or archiving)
+<!-- GIF PLACEHOLDER: Type in the search bar, click filter chips (Differences / All Fail / Exempted), show the matrix updating in real-time -->
+> 📹 *[Demo GIF: Filtering and search in action — coming soon]*
+
+Narrow down results instantly:
+- **Search** by rule name, rule ID, or description
+- **Filter chips:** Differences only · All Fail · Exempted · All Pass · Non-Relevant
+- **Severity filter:** High · Medium · Low
+- **Category grouping** for organized viewing
+
+---
+
+### 🛡️ Exemption Management Engine
+
+<!-- GIF PLACEHOLDER: Open exemption dialog, fill in rule + reason + approver, show the rule turn "Exempted" in the matrix, export the JSON policy -->
+> 📹 *[Demo GIF: Creating and managing exemptions — coming soon]*
+
+Create and manage a local exemption policy for rules that are intentionally non-compliant:
+- **Global exemptions** — apply across all loaded servers
+- **Scoped exemptions** — apply to specific servers only
+- Attach approval details, rationales, and timestamps
+- **Export / Import** policies as a portable JSON file
+
+---
+
+### 📤 Rich Export Options
+
+Export your consolidated compliance matrix to:
+
+| Format | Description |
+|---|---|
+| 📥 **CSV** | Raw data for spreadsheet tools |
+| 📊 **Excel (XLSX)** | Formatted workbook with color-coded cells (powered by SheetJS) |
+| 📄 **Standalone HTML** | Self-contained interactive matrix page — share via email or archive offline |
 
 ---
 
 ## 🛠️ Usage
 
-### Quick Start (Web)
-Simply visit [y8765.github.io/ScapAnalyzer/](https://y8765.github.io/ScapAnalyzer/) in any modern web browser.
+### Option A: Use the Hosted Version (No Setup)
 
-### Local Deployment
-Since ScapAnalyzer is fully static, you can run it locally:
-1. Clone the repository:
-   ```bash
-   git clone https://github.com/Y8765/ScapAnalyzer.git
-   ```
-2. Double-click `index.html` to open it in your browser. (Alternatively, run any simple HTTP server in the directory, e.g., `python -m http.server 8000`).
+Open [y8765.github.io/ScapAnalyzer/](https://y8765.github.io/ScapAnalyzer/) in any modern browser and drag in your reports.
+
+### Option B: Run Locally (Offline / Air-Gapped)
+
+```bash
+git clone https://github.com/Y8765/ScapAnalyzer.git
+cd ScapAnalyzer
+```
+
+Then open `index.html` directly in your browser, or serve it with any static server:
+
+```bash
+python -m http.server 8000
+# Open http://localhost:8000
+```
+
+### Integration with SCAP Suite
+
+If you have [SCAP Suite](https://github.com/Y8765/ScapSuite) installed, click the **📊 Open ScapAnalyzer** button in the Compliance Gallery — it will open ScapAnalyzer automatically (local clone if detected, otherwise the hosted version).
 
 ---
 
@@ -64,23 +107,29 @@ Since ScapAnalyzer is fully static, you can run it locally:
 ```
 ScapAnalyzer/
 ├── css/
-│   └── styles.css       # Core styling & glassmorphism theme tokens
+│   └── styles.css        # Core styling and glassmorphism design tokens
 ├── js/
-│   ├── app.js           # Main application shell & setup
-│   ├── comparator.js    # Comparison matrix generator & filter logic
-│   ├── exemptions.js    # Exemption database & policy manager
-│   ├── exporter.js      # CSV, Excel, and HTML export modules
-│   ├── parser.js        # XCCDF & ARF XML parser and HTML scavenger
-│   ├── storage.js       # IndexedDB storage provider
-│   ├── ui.js            # UI DOM renderer & modal handlers
-│   └── xlsx.bundle.js   # SheetJS library bundle
-├── samples/             # Sample reports for testing
-├── index.html           # Main user interface entrypoint
-└── README.md            # Project documentation
+│   ├── app.js            # Application shell and initialization
+│   ├── comparator.js     # Comparison matrix builder and filter engine
+│   ├── exemptions.js     # Exemption database and policy manager
+│   ├── exporter.js       # CSV, Excel, and standalone HTML exporters
+│   ├── parser.js         # XCCDF & ARF XML parser and HTML report scavenger
+│   ├── storage.js        # IndexedDB persistence layer
+│   ├── ui.js             # DOM renderer and modal/dialog handlers
+│   └── xlsx.bundle.js    # Bundled SheetJS library for Excel export
+├── samples/              # Sample OpenSCAP reports for testing
+├── index.html            # Main application entrypoint
+└── README.md
 ```
 
 ---
 
-## 🛡️ License
+## 🤝 Related Projects
 
-This project is licensed under the **MIT License**. See the license file for details.
+- **[SCAP Suite](https://github.com/Y8765/ScapSuite)** — Remote OpenSCAP scanning platform that generates the reports ScapAnalyzer analyzes
+
+---
+
+## 📄 License
+
+MIT License — see [LICENSE](LICENSE) for details.
