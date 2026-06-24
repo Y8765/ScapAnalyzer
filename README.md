@@ -12,8 +12,7 @@
 
 ---
 
-<!-- GIF PLACEHOLDER: Full overview — drag in 3-4 XML reports, watch the comparison matrix build, click a rule to inspect it -->
-> 📹 *[Demo GIF: Loading reports and exploring the comparison matrix — coming soon]*
+![Comparison Matrix Overview](docs/screenshots/matrix_overview.png)
 
 ---
 
@@ -31,8 +30,7 @@ It is designed to complement **[SCAP Suite](https://github.com/Y8765/ScapSuite)*
 
 ### 📋 Multi-Server Comparison Matrix
 
-<!-- GIF PLACEHOLDER: Load 4-5 reports, show the matrix appearing with color-coded Pass/Fail/Error cells, hover over cells -->
-> 📹 *[Demo GIF: Comparison matrix overview — coming soon]*
+![Comparison Matrix](docs/screenshots/matrix_detail.png)
 
 Load multiple XCCDF/ARF XML or HTML reports and instantly see a side-by-side compliance matrix. Each cell shows the result for that rule on that host — color-coded by status (Pass, Fail, Error, Non-Relevant).
 
@@ -40,8 +38,7 @@ Load multiple XCCDF/ARF XML or HTML reports and instantly see a side-by-side com
 
 ### 🔍 Smart Filtering & Search
 
-<!-- GIF PLACEHOLDER: Type in the search bar, click filter chips (Differences / All Fail / Exempted), show the matrix updating in real-time -->
-> 📹 *[Demo GIF: Filtering and search in action — coming soon]*
+![Smart Filtering](docs/screenshots/filtering.png)
 
 Narrow down results instantly:
 - **Search** by rule name, rule ID, or description
@@ -53,8 +50,7 @@ Narrow down results instantly:
 
 ### 🛡️ Exemption Management Engine
 
-<!-- GIF PLACEHOLDER: Open exemption dialog, fill in rule + reason + approver, show the rule turn "Exempted" in the matrix, export the JSON policy -->
-> 📹 *[Demo GIF: Creating and managing exemptions — coming soon]*
+![Exemption Management](docs/screenshots/exemptions.png)
 
 Create and manage a local exemption policy for rules that are intentionally non-compliant:
 - **Global exemptions** — apply across all loaded servers
